@@ -67,7 +67,10 @@ function findConcert() {
 function findSong() {
     var queryUrl = "https://api.spotify.com/v1/search?q=track:" + userSearch + "&type=track&limit=3"
     spotify.request(queryUrl).then(function(response) {
-        console.log(response.tracks.items[0].name)
+        console.log("Artist(s): " + response.tracks.items[0].artists[0].name)
+        console.log("Track Name: " + response.tracks.items[0].name)
+        console.log("Album Name: " + response.tracks.items[0].album.name)
+        console.log("Preview: " + response.tracks.items[0].preview_url)
     })
     .catch(function(error) {
         console.log(error)
