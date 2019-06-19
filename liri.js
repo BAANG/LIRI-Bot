@@ -98,4 +98,16 @@ function findMovie() {
     })
 }
 
+// Do what it says...
+function doWhatItSays() {
+    
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        if (error) {
+            return console.log(error)
+        }
+        var parseRandom = data.split(",");
+            console.log(parseRandom[0]);
+            console.log(parseRandom[1]);
+    })
+}
 
