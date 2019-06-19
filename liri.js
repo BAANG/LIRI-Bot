@@ -5,6 +5,7 @@ var keys = require("./keys.js");
 var spotify = new Spotify(keys.spotify);
 var axios = require("axios")
 var fs = require("fs")
+var moment = require("moment")
 
 // Global Variables
 var parseUserInput = "";
@@ -46,6 +47,18 @@ switch (userInput) {
 } 
 
 // Bands in Town API
+function findConcert() {
+    var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "/events?app_id=codingbootcamp";
+    
+    axios.get(queryUrl).then(function(response){
+        console.log("Found a concert for " + response.data[0].lineup[0] + "...")
+        console.log(response.data[0].venue.name)
+        console.log(response.data[0].venue.city + ", " + response.data[0].venue.region)
+        console.log(moment(response.data[0].datetime).format("dddd, MMMM Do YYYY, h:mm a"))
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
 
-var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "events?app+id=codingbootcamp"
 
