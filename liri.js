@@ -22,7 +22,7 @@ var parsedInput = function() { //Takes user inputted search parameters and strin
 parsedInput();
 var userInput = process.argv[2];
 var userSearch = parseUserInput
-console.log(userSearch)
+// console.log(userSearch)
 
 
 // Switch-case that runs functions based on user input
@@ -66,16 +66,36 @@ function findConcert() {
 // Spotify API
 function findSong() {
     var queryUrl = "https://api.spotify.com/v1/search?q=track:" + userSearch + "&type=track&limit=3"
+   
     spotify.request(queryUrl).then(function(response) {
-        console.log("Artist(s): " + response.tracks.items[0].artists[0].name)
-        console.log("Track Name: " + response.tracks.items[0].name)
-        console.log("Album Name: " + response.tracks.items[0].album.name)
-        console.log("Preview: " + response.tracks.items[0].preview_url)
+        console.log(chalk.green("Artist(s): ") + response.tracks.items[0].artists[0].name)
+        console.log(chalk.green("Track Name: ") + response.tracks.items[0].name)
+        console.log(chalk.green("Album Name (Year): ") + response.tracks.items[0].album.name + " (" + response.tracks.items[0].album.release_date.substring(0, 4) + ")")
+        if (response.tracks.items[0].preview_url) { //Checks if preview exists before printing to console.
+            console.log(chalk.green("Preview: ") + response.tracks.items[0].preview_url)
+        }
     })
     .catch(function(error) {
         console.log(error)
     })
 
+}
+
+// OMDB API
+function findMovie() {
+    var queryUrl = "http://www.omdbapi.com/?apikey=40e9cece&t=" + userSearch
+
+    axios.get(queryUrl).then(function(response) {
+        console.log(chalk.inverse(response.data.Title + " (" + response.data.Year + ")"))
+        console.log(chalk.underline("\nRatings"))
+        console.log("IMDB: " + response.data.Ratings[0].Value + " | Rotten Tomatoes: " + response.data.Ratings[1].Value)
+        console.log("\nCountry/Language: " + response.data.Country + "/" + response.data.Language)
+        console.log("\nPlot: " + response.data.Plot)
+        console.log("\nCast: " + response.data.Actors)
+    })
+    .catch(function(error) {
+        console.log(error)
+    })
 }
 
 
