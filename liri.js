@@ -50,7 +50,11 @@ switch (userInput) {
 
 // Bands in Town API
 function findConcert() {
-    var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "/events?app_id=codingbootcamp";
+    if (userSearch) {
+        var queryUrl = "https://rest.bandsintown.com/artists/" + userSearch + "/events?app_id=codingbootcamp";
+    } else {
+        var queryUrl = "https://rest.bandsintown.com/artists/Wu-Tang+Clan/events?app_id=codingbootcamp";
+    }
     
     axios.get(queryUrl).then(function(response){
         console.log("Found a concert for " + chalk.inverse(response.data[0].lineup[0] + "...\n"))
@@ -65,7 +69,11 @@ function findConcert() {
 
 // Spotify API
 function findSong() {
-    var queryUrl = "https://api.spotify.com/v1/search?q=track:" + userSearch + "&type=track&limit=3"
+    if (userSearch) {
+        var queryUrl = "https://api.spotify.com/v1/search?q=track:" + userSearch + "&type=track&limit=3"
+    } else {
+        var queryUrl = "https://api.spotify.com/v1/search?q=track:The+Sign+Ace+of+Base&type=track&limit=3"
+    }
    
     spotify.request(queryUrl).then(function(response) {
         console.log(chalk.green("Artist(s): ") + response.tracks.items[0].artists[0].name)
@@ -83,7 +91,11 @@ function findSong() {
 
 // OMDB API
 function findMovie() {
-    var queryUrl = "http://www.omdbapi.com/?apikey=40e9cece&t=" + userSearch
+    if (userSearch) {
+        var queryUrl = "http://www.omdbapi.com/?apikey=40e9cece&t=" + userSearch
+    } else {
+        var queryUrl = "http://www.omdbapi.com/?apikey=40e9cece&t=Mr+Nobody"
+    }
 
     axios.get(queryUrl).then(function(response) {
         console.log(chalk.inverse(response.data.Title + " (" + response.data.Year + ")"))
@@ -106,8 +118,37 @@ function doWhatItSays() {
             return console.log(error)
         }
         var parseRandom = data.split(",");
-            console.log(parseRandom[0]);
-            console.log(parseRandom[1]);
+
+            var operator = parseRandom[0];
+            var searchQuery = parseRandom[1];
+            
+            searchQuery = searchQuery.substring(1, searchQuery.length-1);
+            splitQuery = searchQuery.split(" ");
+            for (var i = 0; i < splitQuery.length; i++) {
+                userSearch += (splitQuery[i] + "+")
+            }
+            userSearch = userSearch.substring(0, userSearch.length-1);
+
+            switch (operator) {
+                case "concert-this":
+                    console.log("\nSearching for concerts...\n")
+                    findConcert();
+                    break;
+            
+                case "spotify-this-song":
+                    console.log("\nSearching for song...\n")
+                    findSong();
+                    break;
+            
+                case "movie-this" :
+                    console.log("\nSearching for movie...\n")    
+                    findMovie();
+                    break;
+
+                case "do-what-it-says" :
+                    console.log("\nLet's not do this.")
+                    break;
+            }
     })
 }
 
