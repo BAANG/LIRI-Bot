@@ -48,6 +48,8 @@ switch (userInput) {
         break;
 } 
 
+var divider = "\n-----------------------------------------------------\n\n"
+
 // Bands in Town API
 function findConcert() {
     if (userSearch) {
@@ -61,6 +63,21 @@ function findConcert() {
         console.log(chalk.underline(response.data[0].venue.name))
         console.log("@ " + response.data[0].venue.city + ", " + response.data[0].venue.region)
         console.log(moment(response.data[0].datetime).format("dddd, MMMM Do YYYY, h:mm a"))
+
+        var logResponse = [
+            "CONCERT SEARCH",
+            "Name: " + response.data[0].lineup[0],
+            "Venue: " + response.data[0].venue.name,
+            "@ " + response.data[0].venue.city + ", " + response.data[0].venue.region,
+            moment(response.data[0].datetime).format("dddd, MMMM Do YYYY, h:mm a")
+
+
+        ].join("\n\n")
+
+        fs.appendFile("log.txt", logResponse + divider, function(err) {
+            if (err) throw (err);
+          })
+
     })
     .catch(function(error) {
         console.log(error);
@@ -82,6 +99,19 @@ function findSong() {
         if (response.tracks.items[0].preview_url) { //Checks if preview exists before printing to console.
             console.log(chalk.green("Preview: ") + response.tracks.items[0].preview_url)
         }
+
+        var logResponse = [
+            "SONG SEARCH",
+            "Artist(s): " + response.tracks.items[0].artists[0].name,
+            "Track Name: " + response.tracks.items[0].name,
+            "Album Name (Year): " + response.tracks.items[0].album.name + " (" + response.tracks.items[0].album.release_date.substring(0, 4) + ")",
+            "Preview: " + response.tracks.items[0].preview_url
+
+        ].join("\n\n")
+
+        fs.appendFile("log.txt", logResponse + divider, function(err) {
+            if (err) throw (err);
+          })
     })
     .catch(function(error) {
         console.log(error)
@@ -104,7 +134,26 @@ function findMovie() {
         console.log("\nCountry/Language: " + response.data.Country + "/" + response.data.Language)
         console.log("\nPlot: " + response.data.Plot)
         console.log("\nCast: " + response.data.Actors)
+    
+    
+        var logResponse = [
+            "MOVIE SEARCH",
+            "Movie name: " + response.data.Title + " (" + response.data.Year + ")",
+            "Ratings",
+            "IMDB: " + response.data.Ratings[0].Value + " | Rotten Tomatoes: " + response.data.Ratings[1].Value,
+            "Country/Language: " + response.data.Country + "/" + response.data.Language,
+            "Plot: " + response.data.Plot,
+            "Cast: " + response.data.Actors
+    
+    
+        ].join("\n\n")
+    
+        fs.appendFile("log.txt", logResponse + divider, function(err) {
+            if (err) throw (err);
+          })
     })
+
+
     .catch(function(error) {
         console.log(error)
     })
